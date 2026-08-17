@@ -1,0 +1,8 @@
+[
+  { "rowId": 1, "portfolioId": "PORT-1001", "strategyId": "STRAT-2001" },
+  { "rowId": 2, "portfolioId": "PORT-1001", "strategyId": "STRAT-2002" },
+  { "rowId": 3, "portfolioId": "PORT-1002", "strategyId": "STRAT-2001" },
+  { "rowId": 4, "portfolioId": "PORT-1002", "strategyId": "STRAT-2003" },
+  { "rowId": 5, "portfolioId": "PORT-1003", "strategyId": "STRAT-2002" },
+  { "rowId": 6, "portfolioId": "PORT-1003", "strategyId": "STRAT-2004" }
+]
