@@ -1,0 +1,20 @@
+{
+  "fixtureFormatVersion": 1,
+  "profileId": "baseline",
+  "description": "Contract-compliant deterministic baseline dataset.",
+  "baseProfileId": null,
+  "businessDate": "2026-08-14",
+  "sourceFiles": {
+    "sequences": "id-sequences.txt",
+    "portfolios": "portfolios.json",
+    "instruments": "instruments.json",
+    "strategies": "strategies.json",
+    "portfolioStrategies": "portfolio-strategies.json",
+    "positions": "positions.json",
+    "transactions": "transactions.json",
+    "performanceRecords": "performance-records.json",
+    "allocationOrders": "allocation-orders.json"
+  },
+  "mutationScripts": [],
+  "expectedDataIssues": []
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "rowId": 1,
+    "allocationOrderId": "AORD-5001",
+    "clientOrderReference": "CLIENT-ORDER-BASE-001",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3001",
+    "side": "BUY",
+    "quantity": "100.0000",
+    "status": "DRAFT",
+    "createdAt": "2026-08-14T08:00:00Z",
+    "updatedAt": "2026-08-14T08:00:00Z",
+    "allocations": [
+      {
+        "rowId": 1,
+        "sequenceNumber": 1,
+        "strategyId": "STRAT-2001",
+        "percentage": "70.00"
+      },
+      {
+        "rowId": 2,
+        "sequenceNumber": 2,
+        "strategyId": "STRAT-2002",
+        "percentage": "30.00"
+      }
+    ]
+  },
+  {
+    "rowId": 2,
+    "allocationOrderId": "AORD-5002",
+    "clientOrderReference": "CLIENT-ORDER-BASE-002",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3001",
+    "side": "BUY",
+    "quantity": "50.0000",
+    "status": "SUBMITTED",
+    "createdAt": "2026-08-14T08:10:00Z",
+    "updatedAt": "2026-08-14T08:20:00Z",
+    "allocations": [
+      {
+        "rowId": 3,
+        "sequenceNumber": 1,
+        "strategyId": "STRAT-2001",
+        "percentage": "50.00"
+      },
+      {
+        "rowId": 4,
+        "sequenceNumber": 2,
+        "strategyId": "STRAT-2002",
+        "percentage": "50.00"
+      }
+    ]
+  },
+  {
+    "rowId": 3,
+    "allocationOrderId": "AORD-5003",
+    "clientOrderReference": "CLIENT-ORDER-BASE-003",
+    "portfolioId": "PORT-1002",
+    "instrumentId": "INST-3002",
+    "side": "SELL",
+    "quantity": "10.0000",
+    "status": "CANCELLED",
+    "createdAt": "2026-08-14T08:30:00Z",
+    "updatedAt": "2026-08-14T08:40:00Z",
+    "allocations": [
+      {
+        "rowId": 5,
+        "sequenceNumber": 1,
+        "strategyId": "STRAT-2003",
+        "percentage": "100.00"
+      }
+    ]
+  }
+]

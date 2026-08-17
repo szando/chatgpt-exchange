@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.invalid/schemas/profile-schema.json",
+  "title": "Portfolio Mock API Fixture Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fixtureFormatVersion",
+    "profileId",
+    "description",
+    "baseProfileId",
+    "businessDate",
+    "sourceFiles",
+    "mutationScripts",
+    "expectedDataIssues"
+  ],
+  "properties": {
+    "fixtureFormatVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "profileId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseProfileId": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "businessDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "sourceFiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[^/]+\\.(?:json|txt)$"
+      }
+    },
+    "mutationScripts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[^/]+\\.sql$"
+      }
+    },
+    "expectedDataIssues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/expectedDataIssue"
+      }
+    }
+  },
+  "definitions": {
+    "expectedDataIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "entityType", "rowId", "field", "value"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "entityType": {
+          "type": "string",
+          "pattern": "^[a-z][A-Za-z0-9]*$"
+        },
+        "rowId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "recordId": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {}
+      }
+    }
+  }
+}

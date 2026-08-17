@@ -1,0 +1,42 @@
+[
+  {
+    "rowId": 1,
+    "positionId": "POS-6001",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3001",
+    "asOfDate": "2026-08-14",
+    "quantity": "250.0000",
+    "marketPrice": { "amount": "142.75", "currency": "CHF" },
+    "marketValue": { "amount": "35687.50", "currency": "CHF" }
+  },
+  {
+    "rowId": 2,
+    "positionId": "POS-6002",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3004",
+    "asOfDate": "2026-08-14",
+    "quantity": "12500.0000",
+    "marketPrice": { "amount": "1.00", "currency": "CHF" },
+    "marketValue": { "amount": "12500.00", "currency": "CHF" }
+  },
+  {
+    "rowId": 3,
+    "positionId": "POS-6003",
+    "portfolioId": "PORT-1002",
+    "instrumentId": "INST-3002",
+    "asOfDate": "2026-08-14",
+    "quantity": "100.0000",
+    "marketPrice": { "amount": "980.50", "currency": "EUR" },
+    "marketValue": { "amount": "98050.00", "currency": "EUR" }
+  },
+  {
+    "rowId": 4,
+    "positionId": "POS-6004",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3001",
+    "asOfDate": "2026-07-31",
+    "quantity": "225.0000",
+    "marketPrice": { "amount": "140.00", "currency": "CHF" },
+    "marketValue": { "amount": "31500.00", "currency": "CHF" }
+  }
+]

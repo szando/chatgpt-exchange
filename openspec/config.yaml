@@ -1,0 +1,28 @@
+schema: spec-driven
+
+context: |
+  The system is a deterministic fictional wealth-management mock REST API used
+  as a real system under test for the PPM API Test Development Kit. It runs on
+  Node.js 24 with TypeScript, Fastify, and the built-in node:sqlite module.
+  Business data comes from a seeded SQLite database. The API must preserve
+  deliberately malformed fixture data in responses so external contract and
+  data-quality tests can observe it. Authentication and pagination are outside
+  scope. OpenAPI 3.0.3 is the public interface contract.
+
+rules:
+  proposal:
+    - State the business outcome, affected capabilities, and compatibility impact.
+    - Use stable identifiers for requirements, acceptance criteria, operations, tests, and tasks.
+    - Do not describe intentionally omitted future requirements in a baseline proposal.
+  specs:
+    - Every requirement must use MUST or SHALL.
+    - Every requirement must contain at least one Given/When/Then scenario.
+    - Preserve the accepted HTTP methods, fixed sorting, and Problem Details behavior.
+    - Treat decimal quantities and percentages as strings at the API boundary.
+  design:
+    - Record validation order, transaction boundaries, and adverse-data behavior.
+    - Prefer composition and injected dependencies over inheritance or global state.
+  tasks:
+    - Give every implementation task a stable TASK identifier.
+    - Include contract, unit, integration, and adverse-path verification where applicable.
+

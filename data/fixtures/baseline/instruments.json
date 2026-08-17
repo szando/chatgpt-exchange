@@ -1,0 +1,38 @@
+[
+  {
+    "rowId": 1,
+    "instrumentId": "INST-3001",
+    "name": "Helvetia Sustainable Equity Fund",
+    "symbol": "HSEF",
+    "assetClass": "FUND",
+    "currency": "CHF",
+    "status": "ACTIVE"
+  },
+  {
+    "rowId": 2,
+    "instrumentId": "INST-3002",
+    "name": "Alpine Government Bond 2032",
+    "symbol": "AGB32",
+    "assetClass": "FIXED_INCOME",
+    "currency": "EUR",
+    "status": "ACTIVE"
+  },
+  {
+    "rowId": 3,
+    "instrumentId": "INST-3003",
+    "name": "Northstar Technology Equity",
+    "symbol": "NSTE",
+    "assetClass": "EQUITY",
+    "currency": "USD",
+    "status": "ACTIVE"
+  },
+  {
+    "rowId": 4,
+    "instrumentId": "INST-3004",
+    "name": "Swiss Franc Cash",
+    "symbol": "CHF-CASH",
+    "assetClass": "CASH",
+    "currency": "CHF",
+    "status": "ACTIVE"
+  }
+]

@@ -1,0 +1,93 @@
+openapi: 3.0.3
+
+info:
+  title: Portfolio Mock API Operations
+  version: 1.0.0
+  description: Health and readiness endpoints for the local mock API runtime.
+
+servers:
+  - url: http://localhost:{port}
+    description: Local mock API runtime
+    variables:
+      port:
+        default: "3000"
+        description: Port on which the mock API is listening.
+
+security: []
+
+tags:
+  - name: Operations
+
+paths:
+  /health:
+    get:
+      tags: [Operations]
+      summary: Check whether the application process is operational
+      operationId: getHealth
+      x-traceability:
+        requirements: [SYS-OPS-001]
+      responses:
+        '200':
+          description: Application process is operational.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: UP
+
+  /ready:
+    get:
+      tags: [Operations]
+      summary: Check whether the API can serve requests
+      operationId: getReadiness
+      x-traceability:
+        requirements: [SYS-OPS-002]
+      responses:
+        '200':
+          description: Database is accessible and its schema is compatible.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+              example:
+                status: READY
+                database: UP
+                schemaVersion: "1"
+        '503':
+          description: Runtime is not ready to serve business requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+              example:
+                status: NOT_READY
+                database: DOWN
+                schemaVersion: null
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      additionalProperties: false
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [UP]
+
+    ReadinessResponse:
+      type: object
+      additionalProperties: false
+      required: [status, database, schemaVersion]
+      properties:
+        status:
+          type: string
+          enum: [READY, NOT_READY]
+        database:
+          type: string
+          enum: [UP, DOWN]
+        schemaVersion:
+          type: string
+          nullable: true
+          pattern: '^[0-9]+$'

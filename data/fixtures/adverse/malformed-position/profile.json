@@ -1,0 +1,27 @@
+{
+  "fixtureFormatVersion": 1,
+  "profileId": "malformed-position",
+  "description": "Stores a numeric quantity and malformed market-value amount for POS-6001.",
+  "baseProfileId": "baseline",
+  "businessDate": "2026-08-14",
+  "sourceFiles": {},
+  "mutationScripts": ["mutations.sql"],
+  "expectedDataIssues": [
+    {
+      "code": "UNEXPECTED_JSON_TYPE",
+      "entityType": "position",
+      "rowId": 1,
+      "recordId": "POS-6001",
+      "field": "quantity",
+      "value": 250
+    },
+    {
+      "code": "INVALID_DECIMAL_FORMAT",
+      "entityType": "position",
+      "rowId": 1,
+      "recordId": "POS-6001",
+      "field": "marketValue.amount",
+      "value": "not-a-decimal"
+    }
+  ]
+}

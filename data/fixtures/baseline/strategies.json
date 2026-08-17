@@ -1,0 +1,38 @@
+[
+  {
+    "rowId": 1,
+    "strategyId": "STRAT-2001",
+    "strategyName": "Balanced Growth",
+    "description": "Balanced allocation with a moderate growth objective.",
+    "status": "ACTIVE",
+    "objective": "GROWTH_AND_INCOME",
+    "riskLevel": "MEDIUM"
+  },
+  {
+    "rowId": 2,
+    "strategyId": "STRAT-2002",
+    "strategyName": "Capital Preservation",
+    "description": "Lower-risk allocation focused on capital preservation.",
+    "status": "ACTIVE",
+    "objective": "CAPITAL_PRESERVATION",
+    "riskLevel": "LOW"
+  },
+  {
+    "rowId": 3,
+    "strategyId": "STRAT-2003",
+    "strategyName": "Global Opportunities",
+    "description": "Higher-risk global growth allocation.",
+    "status": "ACTIVE",
+    "objective": "CAPITAL_GROWTH",
+    "riskLevel": "HIGH"
+  },
+  {
+    "rowId": 4,
+    "strategyId": "STRAT-2004",
+    "strategyName": "Legacy Income",
+    "description": "Retired income-oriented strategy retained for history.",
+    "status": "INACTIVE",
+    "objective": "CAPITAL_PRESERVATION",
+    "riskLevel": "LOW"
+  }
+]
