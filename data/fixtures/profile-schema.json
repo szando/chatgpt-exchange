@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://example.invalid/schemas/fixture-profile.schema.json",
+  "$id": "https://example.invalid/schemas/profile-schema.json",
   "title": "Portfolio Mock API Fixture Profile",
   "type": "object",
   "additionalProperties": false,
