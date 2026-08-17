@@ -1,1 +1,6 @@
-allocation_order=5004
+[
+  {
+    "sequenceName": "allocation_order",
+    "nextNumericValue": 5004
+  }
+]
