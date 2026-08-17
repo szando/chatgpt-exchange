@@ -1,0 +1,51 @@
+[
+  {
+    "rowId": 1,
+    "performanceId": "PERF-7001",
+    "portfolioId": "PORT-1001",
+    "granularity": "MONTHLY",
+    "periodStart": "2026-06-01",
+    "periodEnd": "2026-06-30",
+    "portfolioReturnPercentage": "0.8000",
+    "benchmarkReturnPercentage": "0.7500"
+  },
+  {
+    "rowId": 2,
+    "performanceId": "PERF-7002",
+    "portfolioId": "PORT-1001",
+    "granularity": "MONTHLY",
+    "periodStart": "2026-07-01",
+    "periodEnd": "2026-07-31",
+    "portfolioReturnPercentage": "1.2750",
+    "benchmarkReturnPercentage": "1.1100"
+  },
+  {
+    "rowId": 3,
+    "performanceId": "PERF-7003",
+    "portfolioId": "PORT-1001",
+    "granularity": "DAILY",
+    "periodStart": "2026-08-13",
+    "periodEnd": "2026-08-13",
+    "portfolioReturnPercentage": "-0.1250",
+    "benchmarkReturnPercentage": "-0.0800"
+  },
+  {
+    "rowId": 4,
+    "performanceId": "PERF-7004",
+    "portfolioId": "PORT-1001",
+    "granularity": "DAILY",
+    "periodStart": "2026-08-14",
+    "periodEnd": "2026-08-14",
+    "portfolioReturnPercentage": "0.3500"
+  },
+  {
+    "rowId": 5,
+    "performanceId": "PERF-7005",
+    "portfolioId": "PORT-1002",
+    "granularity": "MONTHLY",
+    "periodStart": "2026-07-01",
+    "periodEnd": "2026-07-31",
+    "portfolioReturnPercentage": "-0.4300",
+    "benchmarkReturnPercentage": "-0.2000"
+  }
+]
