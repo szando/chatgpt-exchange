@@ -1,1 +1,43 @@
-placeholder
+[
+  {
+    "rowId": 1,
+    "transactionId": "TXN-4001",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3001",
+    "transactionType": "BUY",
+    "tradeDate": "2026-08-11",
+    "bookingDate": "2026-08-13",
+    "quantity": "25.0000",
+    "netAmount": { "amount": "-3568.75", "currency": "CHF" }
+  },
+  {
+    "rowId": 2,
+    "transactionId": "TXN-4002",
+    "portfolioId": "PORT-1001",
+    "transactionType": "FEE",
+    "tradeDate": "2026-08-12",
+    "bookingDate": "2026-08-13",
+    "netAmount": { "amount": "-25.00", "currency": "CHF" }
+  },
+  {
+    "rowId": 3,
+    "transactionId": "TXN-4003",
+    "portfolioId": "PORT-1001",
+    "instrumentId": "INST-3001",
+    "transactionType": "DIVIDEND",
+    "tradeDate": "2026-08-07",
+    "bookingDate": "2026-08-08",
+    "netAmount": { "amount": "125.00", "currency": "CHF" }
+  },
+  {
+    "rowId": 4,
+    "transactionId": "TXN-4004",
+    "portfolioId": "PORT-1002",
+    "instrumentId": "INST-3002",
+    "transactionType": "SELL",
+    "tradeDate": "2026-07-31",
+    "bookingDate": "2026-08-02",
+    "quantity": "10.0000",
+    "netAmount": { "amount": "9805.00", "currency": "EUR" }
+  }
+]
