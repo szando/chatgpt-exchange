@@ -1,0 +1,29 @@
+[
+  {
+    "rowId": 1,
+    "portfolioId": "PORT-1001",
+    "name": "Alpine Balanced Portfolio",
+    "portfolioType": "DISCRETIONARY",
+    "baseCurrency": "CHF",
+    "status": "ACTIVE",
+    "valuationDate": "2026-08-14"
+  },
+  {
+    "rowId": 2,
+    "portfolioId": "PORT-1002",
+    "name": "Lakeview Advisory Portfolio",
+    "portfolioType": "ADVISORY",
+    "baseCurrency": "EUR",
+    "status": "ACTIVE",
+    "valuationDate": "2026-08-14"
+  },
+  {
+    "rowId": 3,
+    "portfolioId": "PORT-1003",
+    "name": "Heritage Income Portfolio",
+    "portfolioType": "DISCRETIONARY",
+    "baseCurrency": "CHF",
+    "status": "CLOSED",
+    "valuationDate": "2026-07-31"
+  }
+]
