@@ -4,7 +4,7 @@
 
 `openspec/specs/` is the authoritative behavioral baseline. It describes the accepted initial mock API and contains only the currently approved rules.
 
-`openspec/changes/archive/2026-08-17-build-portfolio-demo-api/` preserves the completed change that established that baseline. Its delta specifications use `## ADDED Requirements` and correspond to the applied capability specifications.
+`openspec/changes/archive/2026-08-17-portfolio-api/` preserves the completed change that established that baseline. Its delta specifications use `## ADDED Requirements` and correspond to the applied capability specifications.
 
 `openspec/changes/require-complete-allocation-totals/` is an active proposed change. Its delta is not yet part of the current baseline. Applying it will add `REQ-ALLOC-009` and its six acceptance criteria to the `allocation-orders` capability.
 
