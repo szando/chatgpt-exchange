@@ -1,0 +1,57 @@
+{
+  "fixtureFormatVersion": 1,
+  "profileId": "missing-portfolio",
+  "description": "Removes PORT-1002 while preserving records that reference it.",
+  "baseProfileId": "baseline",
+  "businessDate": "2026-08-14",
+  "sourceFiles": {},
+  "mutationScripts": ["mutations.sql"],
+  "expectedDataIssues": [
+    {
+      "code": "UNKNOWN_PORTFOLIO_REFERENCE",
+      "entityType": "portfolioStrategy",
+      "rowId": 3,
+      "field": "portfolioId",
+      "value": "PORT-1002"
+    },
+    {
+      "code": "UNKNOWN_PORTFOLIO_REFERENCE",
+      "entityType": "portfolioStrategy",
+      "rowId": 4,
+      "field": "portfolioId",
+      "value": "PORT-1002"
+    },
+    {
+      "code": "UNKNOWN_PORTFOLIO_REFERENCE",
+      "entityType": "position",
+      "rowId": 3,
+      "recordId": "POS-6003",
+      "field": "portfolioId",
+      "value": "PORT-1002"
+    },
+    {
+      "code": "UNKNOWN_PORTFOLIO_REFERENCE",
+      "entityType": "transaction",
+      "rowId": 4,
+      "recordId": "TXN-4004",
+      "field": "portfolioId",
+      "value": "PORT-1002"
+    },
+    {
+      "code": "UNKNOWN_PORTFOLIO_REFERENCE",
+      "entityType": "performanceRecord",
+      "rowId": 5,
+      "recordId": "PERF-7005",
+      "field": "portfolioId",
+      "value": "PORT-1002"
+    },
+    {
+      "code": "UNKNOWN_PORTFOLIO_REFERENCE",
+      "entityType": "allocationOrder",
+      "rowId": 3,
+      "recordId": "AORD-5003",
+      "field": "portfolioId",
+      "value": "PORT-1002"
+    }
+  ]
+}
