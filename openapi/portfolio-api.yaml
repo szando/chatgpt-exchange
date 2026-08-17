@@ -1,0 +1,1485 @@
+openapi: 3.0.3
+
+info:
+  title: Fictional Portfolio Management API
+  version: 1.0.0
+  description: >-
+    Provides deterministic access to fictional portfolio information and
+    allocation-order management. This baseline contract validates individual
+    allocation entries and the lifecycle of allocation orders.
+
+servers:
+  - url: http://localhost:{port}/api/v1
+    description: Local mock API
+    variables:
+      port:
+        default: "3000"
+        description: Port on which the mock API is listening.
+
+security: []
+
+tags:
+  - name: Portfolios
+  - name: Positions
+  - name: Transactions
+  - name: Strategies
+  - name: Performance
+  - name: Allocation Orders
+
+paths:
+  /portfolios/{portfolioId}:
+    get:
+      tags: [Portfolios]
+      summary: Retrieve a portfolio
+      operationId: getPortfolio
+      x-traceability:
+        operationId: OP-PORT-GET-001
+        requirements: [REQ-PORT-001]
+        acceptanceCriteria:
+          - AC-PORT-001-01
+          - AC-PORT-001-02
+      x-error-codes:
+        - INVALID_IDENTIFIER_FORMAT
+        - PORTFOLIO_NOT_FOUND
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      parameters:
+        - $ref: '#/components/parameters/PortfolioIdPath'
+      responses:
+        '200':
+          description: Portfolio returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio'
+              examples:
+                alpineBalanced:
+                  $ref: '#/components/examples/AlpineBalancedPortfolio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /positions/query:
+    post:
+      tags: [Positions]
+      summary: Query position snapshots
+      operationId: queryPositions
+      x-traceability:
+        operationId: OP-POS-QUERY-001
+        requirements:
+          - REQ-QUERY-001
+          - REQ-QUERY-002
+          - REQ-QUERY-003
+          - REQ-QUERY-004
+          - REQ-POS-001
+        acceptanceCriteria:
+          - AC-POS-001-01
+          - AC-POS-001-02
+          - AC-POS-001-03
+          - AC-POS-001-04
+          - AC-POS-001-05
+      x-error-codes:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - INVALID_IDENTIFIER_FORMAT
+        - MISSING_QUERY_FILTER
+        - UNSUPPORTED_MEDIA_TYPE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PositionQueryRequest'
+            examples:
+              portfolioAtDate:
+                value:
+                  portfolioIds: [PORT-1001]
+                  asOfDate: '2026-08-14'
+      responses:
+        '200':
+          description: Matching positions returned in fixed order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PositionQueryResponse'
+              examples:
+                matches:
+                  $ref: '#/components/examples/PositionQueryMatches'
+                empty:
+                  $ref: '#/components/examples/EmptyPositionQueryResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /transactions/query:
+    post:
+      tags: [Transactions]
+      summary: Query transactions
+      operationId: queryTransactions
+      x-traceability:
+        operationId: OP-TXN-QUERY-001
+        requirements:
+          - REQ-QUERY-001
+          - REQ-QUERY-002
+          - REQ-QUERY-003
+          - REQ-QUERY-004
+          - REQ-TXN-001
+        acceptanceCriteria:
+          - AC-TXN-001-01
+          - AC-TXN-001-02
+          - AC-TXN-001-03
+          - AC-TXN-001-04
+          - AC-TXN-001-05
+      x-error-codes:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - INVALID_IDENTIFIER_FORMAT
+        - MISSING_QUERY_FILTER
+        - INVALID_BOOKING_DATE_RANGE
+        - UNSUPPORTED_MEDIA_TYPE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionQueryRequest'
+            example:
+              portfolioIds: [PORT-1001]
+              transactionTypes: [BUY, SELL]
+              bookingDateFrom: '2026-08-01'
+              bookingDateTo: '2026-08-14'
+      responses:
+        '200':
+          description: Matching transactions returned in fixed order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionQueryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /strategies/query:
+    post:
+      tags: [Strategies]
+      summary: Query investment strategies
+      operationId: queryStrategies
+      x-traceability:
+        operationId: OP-STRAT-QUERY-001
+        requirements:
+          - REQ-QUERY-001
+          - REQ-QUERY-002
+          - REQ-QUERY-003
+          - REQ-STRAT-001
+        acceptanceCriteria:
+          - AC-STRAT-001-01
+          - AC-STRAT-001-02
+          - AC-STRAT-001-03
+      x-error-codes:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - INVALID_IDENTIFIER_FORMAT
+        - UNSUPPORTED_MEDIA_TYPE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StrategyQueryRequest'
+            examples:
+              defaultActiveStrategies:
+                value: {}
+              portfolioStrategies:
+                value:
+                  portfolioIds: [PORT-1001]
+                  activeOnly: true
+      responses:
+        '200':
+          description: Matching strategies returned in fixed order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategyQueryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /performance/query:
+    post:
+      tags: [Performance]
+      summary: Query portfolio performance
+      operationId: queryPerformance
+      x-traceability:
+        operationId: OP-PERF-QUERY-001
+        requirements:
+          - REQ-QUERY-001
+          - REQ-QUERY-002
+          - REQ-QUERY-003
+          - REQ-QUERY-004
+          - REQ-PERF-001
+        acceptanceCriteria:
+          - AC-PERF-001-01
+          - AC-PERF-001-02
+          - AC-PERF-001-03
+          - AC-PERF-001-04
+          - AC-PERF-001-05
+      x-error-codes:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - INVALID_IDENTIFIER_FORMAT
+        - MISSING_QUERY_FILTER
+        - INVALID_PERFORMANCE_PERIOD
+        - UNSUPPORTED_MEDIA_TYPE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerformanceQueryRequest'
+            example:
+              portfolioIds: [PORT-1001]
+              periodFrom: '2026-01-01'
+              periodTo: '2026-08-14'
+              granularity: MONTHLY
+      responses:
+        '200':
+          description: Matching performance records returned in fixed order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceQueryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /allocation-orders:
+    post:
+      tags: [Allocation Orders]
+      summary: Create an allocation order
+      operationId: createAllocationOrder
+      x-traceability:
+        operationId: OP-ALLOC-CREATE-001
+        requirements:
+          - REQ-ALLOC-001
+          - REQ-ALLOC-002
+          - REQ-ALLOC-003
+          - REQ-ALLOC-008
+        acceptanceCriteria:
+          - AC-ALLOC-001-01
+          - AC-ALLOC-001-02
+          - AC-ALLOC-001-03
+          - AC-ALLOC-001-04
+          - AC-ALLOC-001-05
+          - AC-ALLOC-001-06
+          - AC-ALLOC-001-07
+          - AC-ALLOC-001-08
+          - AC-ALLOC-008-01
+          - AC-ALLOC-008-02
+      x-error-codes:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - UNKNOWN_PORTFOLIO
+        - PORTFOLIO_NOT_ACTIVE
+        - UNKNOWN_INSTRUMENT
+        - INSTRUMENT_NOT_ACTIVE
+        - UNKNOWN_STRATEGY
+        - STRATEGY_NOT_ACTIVE
+        - STRATEGY_NOT_AVAILABLE
+        - DUPLICATE_STRATEGY
+        - INVALID_QUANTITY
+        - INVALID_ALLOCATION_PERCENTAGE
+        - CLIENT_ORDER_REFERENCE_CONFLICT
+        - UNSUPPORTED_MEDIA_TYPE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAllocationOrderRequest'
+            examples:
+              balancedOrder:
+                $ref: '#/components/examples/ExactAllocationTotalRequest'
+      responses:
+        '201':
+          description: Allocation order created in DRAFT state.
+          headers:
+            Location:
+              description: Relative URL of the created allocation order.
+              schema:
+                type: string
+              example: /api/v1/allocation-orders/AORD-5004
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllocationOrder'
+              examples:
+                createdOrder:
+                  $ref: '#/components/examples/CreatedAllocationOrder'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /allocation-orders/{allocationOrderId}:
+    get:
+      tags: [Allocation Orders]
+      summary: Retrieve an allocation order
+      operationId: getAllocationOrder
+      x-traceability:
+        operationId: OP-ALLOC-GET-001
+        requirements: [REQ-ALLOC-004]
+        acceptanceCriteria:
+          - AC-ALLOC-001-02
+          - AC-ALLOC-001-09
+      x-error-codes:
+        - INVALID_IDENTIFIER_FORMAT
+        - ALLOCATION_ORDER_NOT_FOUND
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      parameters:
+        - $ref: '#/components/parameters/AllocationOrderIdPath'
+      responses:
+        '200':
+          description: Allocation order returned without revalidation or repair.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllocationOrder'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+    put:
+      tags: [Allocation Orders]
+      summary: Replace the editable fields of a draft allocation order
+      operationId: replaceAllocationOrder
+      x-traceability:
+        operationId: OP-ALLOC-UPDATE-001
+        requirements:
+          - REQ-ALLOC-002
+          - REQ-ALLOC-003
+          - REQ-ALLOC-005
+          - REQ-ALLOC-008
+        acceptanceCriteria:
+          - AC-ALLOC-005-01
+          - AC-ALLOC-005-02
+          - AC-ALLOC-005-03
+          - AC-ALLOC-008-03
+          - AC-ALLOC-008-04
+      x-error-codes:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - INVALID_IDENTIFIER_FORMAT
+        - ALLOCATION_ORDER_NOT_FOUND
+        - ALLOCATION_ORDER_NOT_EDITABLE
+        - UNKNOWN_PORTFOLIO
+        - PORTFOLIO_NOT_ACTIVE
+        - UNKNOWN_INSTRUMENT
+        - INSTRUMENT_NOT_ACTIVE
+        - UNKNOWN_STRATEGY
+        - STRATEGY_NOT_ACTIVE
+        - STRATEGY_NOT_AVAILABLE
+        - DUPLICATE_STRATEGY
+        - INVALID_QUANTITY
+        - INVALID_ALLOCATION_PERCENTAGE
+        - CLIENT_ORDER_REFERENCE_CONFLICT
+        - UNSUPPORTED_MEDIA_TYPE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      parameters:
+        - $ref: '#/components/parameters/AllocationOrderIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplaceAllocationOrderRequest'
+      responses:
+        '200':
+          description: Draft allocation order replaced.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllocationOrder'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /allocation-orders/{allocationOrderId}/submit:
+    post:
+      tags: [Allocation Orders]
+      summary: Submit a draft allocation order
+      operationId: submitAllocationOrder
+      x-traceability:
+        operationId: OP-ALLOC-SUBMIT-001
+        requirements:
+          - REQ-ALLOC-002
+          - REQ-ALLOC-003
+          - REQ-ALLOC-006
+        acceptanceCriteria:
+          - AC-ALLOC-006-01
+          - AC-ALLOC-006-02
+      x-error-codes:
+        - INVALID_IDENTIFIER_FORMAT
+        - ALLOCATION_ORDER_NOT_FOUND
+        - ALLOCATION_ORDER_NOT_SUBMITTABLE
+        - UNKNOWN_PORTFOLIO
+        - PORTFOLIO_NOT_ACTIVE
+        - UNKNOWN_INSTRUMENT
+        - INSTRUMENT_NOT_ACTIVE
+        - UNKNOWN_STRATEGY
+        - STRATEGY_NOT_ACTIVE
+        - STRATEGY_NOT_AVAILABLE
+        - DUPLICATE_STRATEGY
+        - INVALID_QUANTITY
+        - INVALID_ALLOCATION_PERCENTAGE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      parameters:
+        - $ref: '#/components/parameters/AllocationOrderIdPath'
+      responses:
+        '200':
+          description: Allocation order submitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllocationOrder'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableContent'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /allocation-orders/{allocationOrderId}/cancel:
+    post:
+      tags: [Allocation Orders]
+      summary: Cancel a draft or submitted allocation order
+      operationId: cancelAllocationOrder
+      x-traceability:
+        operationId: OP-ALLOC-CANCEL-001
+        requirements: [REQ-ALLOC-007]
+        acceptanceCriteria:
+          - AC-ALLOC-007-01
+          - AC-ALLOC-007-02
+          - AC-ALLOC-007-03
+      x-error-codes:
+        - INVALID_IDENTIFIER_FORMAT
+        - ALLOCATION_ORDER_NOT_FOUND
+        - ALLOCATION_ORDER_NOT_CANCELLABLE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+      parameters:
+        - $ref: '#/components/parameters/AllocationOrderIdPath'
+      responses:
+        '200':
+          description: Allocation order cancelled without content revalidation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllocationOrder'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+components:
+  parameters:
+    PortfolioIdPath:
+      name: portfolioId
+      in: path
+      required: true
+      description: Stable portfolio identifier.
+      schema:
+        $ref: '#/components/schemas/PortfolioId'
+
+    AllocationOrderIdPath:
+      name: allocationOrderId
+      in: path
+      required: true
+      description: Stable allocation-order identifier.
+      schema:
+        $ref: '#/components/schemas/AllocationOrderId'
+
+  responses:
+    BadRequest:
+      description: Request syntax or schema validation failed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          examples:
+            invalidRequest:
+              $ref: '#/components/examples/InvalidRequestProblem'
+
+    NotFound:
+      description: Requested resource was not found.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Conflict:
+      description: Request conflicts with existing state or data.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    UnsupportedMediaType:
+      description: Request content type is not supported.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    UnprocessableContent:
+      description: Request is structurally valid but violates a business rule.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    InternalServerError:
+      description: An unexpected internal failure occurred.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    ServiceUnavailable:
+      description: The configured data source is unavailable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+  schemas:
+    PortfolioId:
+      type: string
+      pattern: '^PORT-[0-9]{4}$'
+      example: PORT-1001
+
+    StrategyId:
+      type: string
+      pattern: '^STRAT-[0-9]{4}$'
+      example: STRAT-2001
+
+    InstrumentId:
+      type: string
+      pattern: '^INST-[0-9]{4}$'
+      example: INST-3001
+
+    PositionId:
+      type: string
+      pattern: '^POS-[0-9]{4}$'
+      example: POS-6001
+
+    TransactionId:
+      type: string
+      pattern: '^TXN-[0-9]{4}$'
+      example: TXN-4001
+
+    PerformanceId:
+      type: string
+      pattern: '^PERF-[0-9]{4}$'
+      example: PERF-7001
+
+    AllocationOrderId:
+      type: string
+      pattern: '^AORD-[0-9]{4,}$'
+      example: AORD-5001
+
+    ClientOrderReference:
+      type: string
+      minLength: 1
+      maxLength: 64
+      pattern: '^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$'
+      example: CLIENT-ORDER-2026-001
+
+    MoneyAmount:
+      type: string
+      pattern: '^-?[0-9]+\.[0-9]{2}$'
+      example: "125000.50"
+
+    Quantity:
+      type: string
+      pattern: '^[0-9]+(\.[0-9]{1,4})?$'
+      example: "250.0000"
+
+    AllocationPercentage:
+      type: string
+      pattern: '^[0-9]+(\.[0-9]{1,2})?$'
+      example: "60.00"
+
+    PerformancePercentage:
+      type: string
+      pattern: '^-?[0-9]+(\.[0-9]{1,4})?$'
+      example: "1.2750"
+
+    BusinessDate:
+      type: string
+      format: date
+      example: '2026-08-14'
+
+    UtcTimestamp:
+      type: string
+      format: date-time
+      example: '2026-08-14T09:30:00Z'
+
+    CurrencyCode:
+      type: string
+      enum: [CHF, EUR, USD]
+
+    PortfolioType:
+      type: string
+      enum: [DISCRETIONARY, ADVISORY]
+
+    PortfolioStatus:
+      type: string
+      enum: [ACTIVE, CLOSED]
+
+    InstrumentStatus:
+      type: string
+      enum: [ACTIVE, INACTIVE]
+
+    AssetClass:
+      type: string
+      enum: [EQUITY, FIXED_INCOME, FUND, CASH]
+
+    StrategyStatus:
+      type: string
+      enum: [ACTIVE, INACTIVE]
+
+    StrategyObjective:
+      type: string
+      enum:
+        - CAPITAL_PRESERVATION
+        - GROWTH_AND_INCOME
+        - CAPITAL_GROWTH
+
+    RiskLevel:
+      type: string
+      enum: [LOW, MEDIUM, HIGH]
+
+    TransactionType:
+      type: string
+      enum: [BUY, SELL, DIVIDEND, FEE]
+
+    PerformanceGranularity:
+      type: string
+      enum: [DAILY, MONTHLY]
+
+    AllocationSide:
+      type: string
+      enum: [BUY, SELL]
+
+    AllocationOrderStatus:
+      type: string
+      enum: [DRAFT, SUBMITTED, CANCELLED]
+
+    ErrorCode:
+      type: string
+      description: Stable machine-readable error identifier.
+      enum:
+        - MALFORMED_JSON
+        - INVALID_REQUEST
+        - INVALID_IDENTIFIER_FORMAT
+        - MISSING_QUERY_FILTER
+        - UNSUPPORTED_MEDIA_TYPE
+        - INVALID_BOOKING_DATE_RANGE
+        - INVALID_PERFORMANCE_PERIOD
+        - PORTFOLIO_NOT_FOUND
+        - ALLOCATION_ORDER_NOT_FOUND
+        - UNKNOWN_PORTFOLIO
+        - PORTFOLIO_NOT_ACTIVE
+        - UNKNOWN_INSTRUMENT
+        - INSTRUMENT_NOT_ACTIVE
+        - UNKNOWN_STRATEGY
+        - STRATEGY_NOT_ACTIVE
+        - STRATEGY_NOT_AVAILABLE
+        - DUPLICATE_STRATEGY
+        - INVALID_QUANTITY
+        - INVALID_ALLOCATION_PERCENTAGE
+        - CLIENT_ORDER_REFERENCE_CONFLICT
+        - ALLOCATION_ORDER_NOT_EDITABLE
+        - ALLOCATION_ORDER_NOT_SUBMITTABLE
+        - ALLOCATION_ORDER_NOT_CANCELLABLE
+        - INTERNAL_SERVER_ERROR
+        - DATA_SOURCE_UNAVAILABLE
+
+    Money:
+      type: object
+      additionalProperties: false
+      required: [amount, currency]
+      properties:
+        amount:
+          $ref: '#/components/schemas/MoneyAmount'
+        currency:
+          $ref: '#/components/schemas/CurrencyCode'
+
+    PortfolioSummary:
+      type: object
+      additionalProperties: false
+      required: [portfolioId, name, baseCurrency]
+      properties:
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        name:
+          type: string
+        baseCurrency:
+          $ref: '#/components/schemas/CurrencyCode'
+
+    InstrumentSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - instrumentId
+        - name
+        - symbol
+        - assetClass
+        - currency
+      properties:
+        instrumentId:
+          $ref: '#/components/schemas/InstrumentId'
+        name:
+          type: string
+        symbol:
+          type: string
+        assetClass:
+          $ref: '#/components/schemas/AssetClass'
+        currency:
+          $ref: '#/components/schemas/CurrencyCode'
+
+    StrategySummary:
+      type: object
+      additionalProperties: false
+      required: [strategyId, strategyName, status]
+      properties:
+        strategyId:
+          $ref: '#/components/schemas/StrategyId'
+        strategyName:
+          type: string
+        status:
+          $ref: '#/components/schemas/StrategyStatus'
+
+    Portfolio:
+      type: object
+      additionalProperties: false
+      required:
+        - portfolioId
+        - name
+        - portfolioType
+        - baseCurrency
+        - status
+        - valuationDate
+      properties:
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        name:
+          type: string
+        portfolioType:
+          $ref: '#/components/schemas/PortfolioType'
+        baseCurrency:
+          $ref: '#/components/schemas/CurrencyCode'
+        status:
+          $ref: '#/components/schemas/PortfolioStatus'
+        valuationDate:
+          $ref: '#/components/schemas/BusinessDate'
+
+    PositionValuation:
+      type: object
+      additionalProperties: false
+      required:
+        - asOfDate
+        - quantity
+        - marketPrice
+        - marketValue
+      properties:
+        asOfDate:
+          $ref: '#/components/schemas/BusinessDate'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        marketPrice:
+          $ref: '#/components/schemas/Money'
+        marketValue:
+          $ref: '#/components/schemas/Money'
+
+    Position:
+      type: object
+      additionalProperties: false
+      required:
+        - positionId
+        - portfolioId
+        - portfolio
+        - instrumentId
+        - instrument
+        - valuation
+      properties:
+        positionId:
+          $ref: '#/components/schemas/PositionId'
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        portfolio:
+          $ref: '#/components/schemas/PortfolioSummary'
+        instrumentId:
+          $ref: '#/components/schemas/InstrumentId'
+        instrument:
+          $ref: '#/components/schemas/InstrumentSummary'
+        valuation:
+          $ref: '#/components/schemas/PositionValuation'
+
+    TransactionDates:
+      type: object
+      additionalProperties: false
+      required: [tradeDate, bookingDate]
+      properties:
+        tradeDate:
+          $ref: '#/components/schemas/BusinessDate'
+        bookingDate:
+          $ref: '#/components/schemas/BusinessDate'
+
+    TransactionDetails:
+      type: object
+      additionalProperties: false
+      required: [netAmount]
+      properties:
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        netAmount:
+          $ref: '#/components/schemas/Money'
+
+    Transaction:
+      type: object
+      additionalProperties: false
+      required:
+        - transactionId
+        - portfolioId
+        - portfolio
+        - transactionType
+        - dates
+        - details
+      properties:
+        transactionId:
+          $ref: '#/components/schemas/TransactionId'
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        portfolio:
+          $ref: '#/components/schemas/PortfolioSummary'
+        instrumentId:
+          $ref: '#/components/schemas/InstrumentId'
+        instrument:
+          $ref: '#/components/schemas/InstrumentSummary'
+        transactionType:
+          $ref: '#/components/schemas/TransactionType'
+        dates:
+          $ref: '#/components/schemas/TransactionDates'
+        details:
+          $ref: '#/components/schemas/TransactionDetails'
+
+    StrategyProfile:
+      type: object
+      additionalProperties: false
+      required: [objective, riskLevel]
+      properties:
+        objective:
+          $ref: '#/components/schemas/StrategyObjective'
+        riskLevel:
+          $ref: '#/components/schemas/RiskLevel'
+
+    StrategyAvailability:
+      type: object
+      additionalProperties: false
+      required: [portfolioIds]
+      properties:
+        portfolioIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortfolioId'
+
+    Strategy:
+      type: object
+      additionalProperties: false
+      required:
+        - strategyId
+        - strategyName
+        - description
+        - status
+        - profile
+        - availability
+      properties:
+        strategyId:
+          $ref: '#/components/schemas/StrategyId'
+        strategyName:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StrategyStatus'
+        profile:
+          $ref: '#/components/schemas/StrategyProfile'
+        availability:
+          $ref: '#/components/schemas/StrategyAvailability'
+
+    PerformancePeriod:
+      type: object
+      additionalProperties: false
+      required: [granularity, startDate, endDate]
+      properties:
+        granularity:
+          $ref: '#/components/schemas/PerformanceGranularity'
+        startDate:
+          $ref: '#/components/schemas/BusinessDate'
+        endDate:
+          $ref: '#/components/schemas/BusinessDate'
+
+    PerformanceReturns:
+      type: object
+      additionalProperties: false
+      required: [portfolioPercentage]
+      properties:
+        portfolioPercentage:
+          $ref: '#/components/schemas/PerformancePercentage'
+        benchmarkPercentage:
+          $ref: '#/components/schemas/PerformancePercentage'
+
+    PerformanceRecord:
+      type: object
+      additionalProperties: false
+      required:
+        - performanceId
+        - portfolioId
+        - portfolio
+        - period
+        - returns
+      properties:
+        performanceId:
+          $ref: '#/components/schemas/PerformanceId'
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        portfolio:
+          $ref: '#/components/schemas/PortfolioSummary'
+        period:
+          $ref: '#/components/schemas/PerformancePeriod'
+        returns:
+          $ref: '#/components/schemas/PerformanceReturns'
+
+    AllocationRequest:
+      type: object
+      additionalProperties: false
+      required: [strategyId, percentage]
+      properties:
+        strategyId:
+          $ref: '#/components/schemas/StrategyId'
+        percentage:
+          $ref: '#/components/schemas/AllocationPercentage'
+
+    AllocationResponse:
+      type: object
+      additionalProperties: false
+      required: [strategyId, strategy, percentage]
+      properties:
+        strategyId:
+          $ref: '#/components/schemas/StrategyId'
+        strategy:
+          $ref: '#/components/schemas/StrategySummary'
+        percentage:
+          $ref: '#/components/schemas/AllocationPercentage'
+
+    AllocationOrderDetails:
+      type: object
+      additionalProperties: false
+      required: [instrumentId, instrument, side, quantity]
+      properties:
+        instrumentId:
+          $ref: '#/components/schemas/InstrumentId'
+        instrument:
+          $ref: '#/components/schemas/InstrumentSummary'
+        side:
+          $ref: '#/components/schemas/AllocationSide'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+
+    AllocationAudit:
+      type: object
+      additionalProperties: false
+      required: [createdAt, updatedAt]
+      properties:
+        createdAt:
+          $ref: '#/components/schemas/UtcTimestamp'
+        updatedAt:
+          $ref: '#/components/schemas/UtcTimestamp'
+
+    AllocationOrder:
+      type: object
+      additionalProperties: false
+      required:
+        - allocationOrderId
+        - clientOrderReference
+        - portfolioId
+        - portfolio
+        - orderDetails
+        - status
+        - allocations
+        - audit
+      properties:
+        allocationOrderId:
+          $ref: '#/components/schemas/AllocationOrderId'
+        clientOrderReference:
+          $ref: '#/components/schemas/ClientOrderReference'
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        portfolio:
+          $ref: '#/components/schemas/PortfolioSummary'
+        orderDetails:
+          $ref: '#/components/schemas/AllocationOrderDetails'
+        status:
+          $ref: '#/components/schemas/AllocationOrderStatus'
+        allocations:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AllocationResponse'
+        audit:
+          $ref: '#/components/schemas/AllocationAudit'
+
+    PositionQueryRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        portfolioIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PortfolioId'
+        instrumentIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/InstrumentId'
+        asOfDate:
+          $ref: '#/components/schemas/BusinessDate'
+
+    TransactionQueryRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        portfolioIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PortfolioId'
+        transactionTypes:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/TransactionType'
+        bookingDateFrom:
+          $ref: '#/components/schemas/BusinessDate'
+        bookingDateTo:
+          $ref: '#/components/schemas/BusinessDate'
+
+    StrategyQueryRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        portfolioIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PortfolioId'
+        strategyIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/StrategyId'
+        activeOnly:
+          type: boolean
+          default: true
+
+    PerformanceQueryRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        portfolioIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PortfolioId'
+        periodFrom:
+          $ref: '#/components/schemas/BusinessDate'
+        periodTo:
+          $ref: '#/components/schemas/BusinessDate'
+        granularity:
+          $ref: '#/components/schemas/PerformanceGranularity'
+
+    PositionQueryResponse:
+      type: object
+      additionalProperties: false
+      required: [items, totalCount]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Position'
+        totalCount:
+          type: integer
+          format: int32
+          minimum: 0
+
+    TransactionQueryResponse:
+      type: object
+      additionalProperties: false
+      required: [items, totalCount]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        totalCount:
+          type: integer
+          format: int32
+          minimum: 0
+
+    StrategyQueryResponse:
+      type: object
+      additionalProperties: false
+      required: [items, totalCount]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Strategy'
+        totalCount:
+          type: integer
+          format: int32
+          minimum: 0
+
+    PerformanceQueryResponse:
+      type: object
+      additionalProperties: false
+      required: [items, totalCount]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerformanceRecord'
+        totalCount:
+          type: integer
+          format: int32
+          minimum: 0
+
+    CreateAllocationOrderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - clientOrderReference
+        - portfolioId
+        - instrumentId
+        - side
+        - quantity
+        - allocations
+      properties:
+        clientOrderReference:
+          $ref: '#/components/schemas/ClientOrderReference'
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        instrumentId:
+          $ref: '#/components/schemas/InstrumentId'
+        side:
+          $ref: '#/components/schemas/AllocationSide'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        allocations:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AllocationRequest'
+
+    ReplaceAllocationOrderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - clientOrderReference
+        - portfolioId
+        - instrumentId
+        - side
+        - quantity
+        - allocations
+      properties:
+        clientOrderReference:
+          $ref: '#/components/schemas/ClientOrderReference'
+        portfolioId:
+          $ref: '#/components/schemas/PortfolioId'
+        instrumentId:
+          $ref: '#/components/schemas/InstrumentId'
+        side:
+          $ref: '#/components/schemas/AllocationSide'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        allocations:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AllocationRequest'
+
+    Violation:
+      type: object
+      additionalProperties: false
+      required: [path, code, message]
+      properties:
+        path:
+          type: string
+          description: JSON Pointer identifying the affected value.
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+        expected:
+          type: string
+        actual:
+          type: string
+
+    ProblemDetails:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+        - code
+        - violations
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+
+  examples:
+    AlpineBalancedPortfolio:
+      summary: Active discretionary CHF portfolio
+      value:
+        portfolioId: PORT-1001
+        name: Alpine Balanced Portfolio
+        portfolioType: DISCRETIONARY
+        baseCurrency: CHF
+        status: ACTIVE
+        valuationDate: '2026-08-14'
+
+    PositionQueryMatches:
+      summary: Two positions for PORT-1001 on the baseline valuation date
+      value:
+        items:
+          - positionId: POS-6001
+            portfolioId: PORT-1001
+            portfolio:
+              portfolioId: PORT-1001
+              name: Alpine Balanced Portfolio
+              baseCurrency: CHF
+            instrumentId: INST-3001
+            instrument:
+              instrumentId: INST-3001
+              name: Helvetia Sustainable Equity Fund
+              symbol: HSEF
+              assetClass: FUND
+              currency: CHF
+            valuation:
+              asOfDate: '2026-08-14'
+              quantity: "250.0000"
+              marketPrice:
+                amount: "142.75"
+                currency: CHF
+              marketValue:
+                amount: "35687.50"
+                currency: CHF
+          - positionId: POS-6002
+            portfolioId: PORT-1001
+            portfolio:
+              portfolioId: PORT-1001
+              name: Alpine Balanced Portfolio
+              baseCurrency: CHF
+            instrumentId: INST-3004
+            instrument:
+              instrumentId: INST-3004
+              name: Swiss Franc Cash
+              symbol: CHF-CASH
+              assetClass: CASH
+              currency: CHF
+            valuation:
+              asOfDate: '2026-08-14'
+              quantity: "12500.0000"
+              marketPrice:
+                amount: "1.00"
+                currency: CHF
+              marketValue:
+                amount: "12500.00"
+                currency: CHF
+        totalCount: 2
+
+    EmptyPositionQueryResult:
+      summary: Valid query with no matching positions
+      value:
+        items: []
+        totalCount: 0
+
+    ExactAllocationTotalRequest:
+      summary: Allocation order request with individually valid entries
+      value:
+        clientOrderReference: CLIENT-ORDER-2026-001
+        portfolioId: PORT-1001
+        instrumentId: INST-3001
+        side: BUY
+        quantity: "250.0000"
+        allocations:
+          - strategyId: STRAT-2001
+            percentage: "60.00"
+          - strategyId: STRAT-2002
+            percentage: "40.00"
+
+    CreatedAllocationOrder:
+      summary: Newly created draft allocation order
+      value:
+        allocationOrderId: AORD-5004
+        clientOrderReference: CLIENT-ORDER-2026-001
+        portfolioId: PORT-1001
+        portfolio:
+          portfolioId: PORT-1001
+          name: Alpine Balanced Portfolio
+          baseCurrency: CHF
+        orderDetails:
+          instrumentId: INST-3001
+          instrument:
+            instrumentId: INST-3001
+            name: Helvetia Sustainable Equity Fund
+            symbol: HSEF
+            assetClass: FUND
+            currency: CHF
+          side: BUY
+          quantity: "250.0000"
+        status: DRAFT
+        allocations:
+          - strategyId: STRAT-2001
+            strategy:
+              strategyId: STRAT-2001
+              strategyName: Balanced Growth
+              status: ACTIVE
+            percentage: "60.00"
+          - strategyId: STRAT-2002
+            strategy:
+              strategyId: STRAT-2002
+              strategyName: Capital Preservation
+              status: ACTIVE
+            percentage: "40.00"
+        audit:
+          createdAt: '2026-08-14T09:30:00Z'
+          updatedAt: '2026-08-14T09:30:00Z'
+
+    InvalidRequestProblem:
+      summary: Request with an invalid portfolio identifier
+      value:
+        type: https://example.invalid/problems/invalid-request
+        title: Request validation failed
+        status: 400
+        detail: One or more request fields are invalid.
+        instance: /api/v1/positions/query
+        code: INVALID_REQUEST
+        violations:
+          - path: /portfolioIds/0
+            code: INVALID_IDENTIFIER_FORMAT
+            message: Expected an identifier in PORT-0000 format.
