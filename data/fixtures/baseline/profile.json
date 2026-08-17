@@ -5,7 +5,7 @@
   "baseProfileId": null,
   "businessDate": "2026-08-14",
   "sourceFiles": {
-    "sequences": "sequences.json",
+    "sequences": "id-sequences.txt",
     "portfolios": "portfolios.json",
     "instruments": "instruments.json",
     "strategies": "strategies.json",
